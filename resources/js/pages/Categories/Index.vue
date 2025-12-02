@@ -4,7 +4,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { type BreadcrumbItem } from '@/types';
 import axios from '@/lib/axios';
-import { Pencil, Trash2, Plus } from 'lucide-vue-next';
+import { Pencil, Trash2, Plus, FileDown, FileSpreadsheet } from 'lucide-vue-next';
+
 
 interface Category {
     id: number;
@@ -31,6 +32,18 @@ const loading = ref(false);
 const error = ref<string | null>(null);
 const showModal = ref(false);
 const editingCategory = ref<Category | null>(null);
+
+
+import { FwbButton, FwbModal } from 'flowbite-vue'
+
+const isShowModal = ref(false)
+
+function closeModalv2 () {
+  isShowModal.value = false
+}
+function showModalv2 () {
+  isShowModal.value = true
+}
 
 // Formulario
 const form = ref({
@@ -135,6 +148,18 @@ const deleteCategory = async (id: number) => {
     }
 };
 
+const exportToPdf = () => {
+    // Crear un enlace temporal para descargar el PDF
+    const url = '/categories-export-pdf';
+    window.location.href = url;
+};
+
+const exportToExcel = () => {
+    // Descargar el archivo Excel
+    const url = '/categories-export-excel';
+    window.location.href = url;
+};
+
 onMounted(() => {
     fetchCategories();
 });
@@ -148,13 +173,31 @@ onMounted(() => {
             <!-- Header -->
             <div class="flex items-center justify-between">
                 <h1 class="text-3xl font-bold">Categorías</h1>
-                <button
-                    @click="openCreateModal"
-                    class="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                >
-                    <Plus :size="20" />
-                    Nueva Categoría
-                </button>
+                <div class="flex gap-3">
+                    <button
+                        @click="exportToExcel"
+                        class="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-white hover:bg-emerald-700"
+                        title="Exportar a Excel"
+                    >
+                        <FileSpreadsheet :size="20" />
+                        Exportar Excel
+                    </button>
+                    <button
+                        @click="exportToPdf"
+                        class="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+                        title="Exportar a PDF"
+                    >
+                        <FileDown :size="20" />
+                        Exportar PDF
+                    </button>
+                    <button
+                        @click="openCreateModal"
+                        class="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                    >
+                        <Plus :size="20" />
+                        Nueva Categoría
+                    </button>
+                </div>
             </div>
 
             <!-- Error Message -->
@@ -301,5 +344,39 @@ onMounted(() => {
                 </form>
             </div>
         </div>
+
+
+  <fwb-button @click="showModalv2">
+    Open modal
+  </fwb-button>
+
+  <fwb-modal v-if="isShowModal" @close="closeModalv2" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+>
+    <template #header>
+      <div class="flex items-center text-lg">
+        Terms of Service
+      </div>
+    </template>
+    <template #body>
+      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        With less than a month to go before the European Union enacts new consumer privacy laws for its citizens, companies around the world are updating their terms of service agreements to comply.
+      </p>
+      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
+        The European Union’s General Data Protection Regulation (G.D.P.R.) goes into effect on May 25 and is meant to ensure a common set of data rights in the European Union. It requires organizations to notify users as soon as possible of high-risk data breaches that could personally affect them.
+      </p>
+    </template>
+    <template #footer>
+      <div class="flex justify-between">
+        <fwb-button @click="closeModalv2" color="alternative">
+          Decline
+        </fwb-button>
+        <fwb-button @click="closeModalv2" color="green">
+          I accept
+        </fwb-button>
+      </div>
+    </template>
+  </fwb-modal>
+
+
     </AppLayout>
 </template>

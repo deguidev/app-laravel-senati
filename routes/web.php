@@ -31,6 +31,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('categories-data/{category}', [CategoryController::class, 'show'])->name('categories.show');
     Route::put('categories-data/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categories-data/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('categories-export-pdf', [CategoryController::class, 'exportPdf'])->name('categories.export.pdf');
+    Route::get('categories-export-excel', [CategoryController::class, 'exportExcel'])->name('categories.export.excel');
 });
 
 // Rutas para Marcas (usando Inertia)
